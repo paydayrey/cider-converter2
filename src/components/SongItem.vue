@@ -47,7 +47,7 @@
 </style>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
 	image: string,
 	title: string,
 	artist: string,
