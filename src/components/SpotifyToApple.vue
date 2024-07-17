@@ -8,7 +8,12 @@
       </div>
       <div>
         <label for="userToken">Apple Music User Token:</label>
-        <input type="password" v-model="pref.userToken" id="userToken" required />
+        <div class="token-input-container">
+          <input :type="showToken ? 'text' : 'password'" v-model="pref.userToken" id="userToken" required />
+          <button type="button" @click="toggleShowToken">
+            {{ showToken ? 'Hide' : 'Show' }}
+          </button>
+        </div>
       </div>
       <div>
         <label for="name">Playlist Name (optional):</label>
@@ -18,7 +23,7 @@
         <label for="description">Playlist Description (optional):</label>
         <input type="text" v-model="pref.description" id="description" />
       </div>
-      <Button type="submit">Convert Playlist</Button>
+      <button type="submit">Convert Playlist</button>
     </form>
     <div v-if="result">
       <h2>Conversion Result</h2>
@@ -38,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import SongItem from './SongItem.vue';
 
 onMounted(() => {
@@ -46,7 +51,6 @@ onMounted(() => {
   script.src = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
   document.head.appendChild(script);
 })
-
 
 type Preference = {
   playlistID: string,
@@ -68,6 +72,11 @@ const pref = ref<Preference>({
 
 const result = ref<any>(null);
 const tracks = ref<any>(null);
+const showToken = ref(false);
+
+function toggleShowToken() {
+  showToken.value = !showToken.value;
+}
 
 async function convertPlaylist() {
   try {
@@ -94,7 +103,6 @@ async function getAMSongs(tracks: [{id: string| null, type: "song"}]) {
   const songIDs = tracks.filter(track => track.id && track.type === 'song').map(track => track.id);
   const response = await MusicKit.getInstance().api.v3.music(`v1/catalog/${storefront}/songs?ids=${songIDs.join(',')}`);
   return response.data.data;
-
 }
 
 function toImage(artwork: SongImageObj, width?: number, height?: number) {
@@ -102,7 +110,6 @@ function toImage(artwork: SongImageObj, width?: number, height?: number) {
 }
 </script>
 
-  
 <style scoped lang="scss">
 form {
   margin-bottom: 20px;
@@ -116,6 +123,19 @@ input {
   padding: 8px;
   margin: 5px 0 15px 0;
   box-sizing: border-box;
+}
+.token-input-container {
+  display: flex;
+  align-items: center;
+}
+
+.token-input-container button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 15px;
+  font-size: 16px;
+  margin-top: -10px; /* Move the button up by 2 pixels */
 }
 button {
   padding: 10px 15px;

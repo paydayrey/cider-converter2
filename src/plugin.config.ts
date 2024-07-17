@@ -2,7 +2,7 @@ import { createId } from "@paralleldrive/cuid2"
 
 export default {
     ce_prefix: createId(),
-    identifier: 'sh.cider.plugin-template-wip',
+    identifier: 'sh.cider.convertarr',
     name: 'Convertarr',
     description: 'A plugin to convert Spotify playlists to Apple Music',
     version: '0.0.1',

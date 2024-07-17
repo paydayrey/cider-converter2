@@ -12,7 +12,7 @@ export const CustomElements = {
 }
 
 export default {
-    name: 'My Plugin',
+    name: 'Convertarr',
     identifier: config.identifier,
     version: config.version,
     description: config.description,
