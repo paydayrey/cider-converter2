@@ -6,13 +6,9 @@ const cfg = computed(() => {
     return window.CiderApp.config.getRef();
 });
 </script>
-
 <template>
     <div class="q-pa-lg plugin-base">
         <h1 class="apple-heading">Spotify playlist converter.</h1>
-
-        {{ cfg.general.displayName }}
-
         <p></p>
         <SpotifyToApple />
     </div>

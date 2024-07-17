@@ -40,19 +40,16 @@
   
       const convertPlaylist = async () => {
         try {
-          const params = new URLSearchParams({
-            to: 'am',
-            userToken: userToken.value,
-          });
+          let url = `https://converter.yaz.ninja/importPlaylists/spotify/${playlistID.value}?to=am&userToken=${encodeURIComponent(userToken.value)}`;
   
           if (name.value) {
-            params.append('name', name.value);
+            url += `&name=${encodeURIComponent(name.value)}`;
           }
           if (description.value) {
-            params.append('description', description.value);
+            url += `&description=${encodeURIComponent(description.value)}`;
           }
   
-          const response = await fetch(`https://converter.yaz.ninja/importPlaylists/spotify/${playlistID.value}?${params}`);
+          const response = await fetch(url);
           const data = await response.json();
           result.value = data;
         } catch (error) {
