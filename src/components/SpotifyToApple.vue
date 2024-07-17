@@ -127,7 +127,6 @@ button {
     background-color: #0056b3;
   }
 }
-
 .songs-container {
   padding: 0.2rem 2rem;
   background-color: #232323;

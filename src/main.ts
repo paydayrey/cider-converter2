@@ -2,55 +2,23 @@ import { defineCustomElement } from "./CustomElement/apiCustomElement";
 import { addImmersiveMenuEntry, addMainMenuEntry, addMediaItemContextMenuEntry } from "./api/MenuEntry";
 import { goToPage } from "./api/Page";
 import { PluginAPI } from "./api/PluginAPI";
-import HelloWorld from "./components/HelloWorld.vue";
-import MySettings from "./components/MySettings.vue";
 import CustomPage from "./pages/CustomPage.vue";
 import { customElementName } from "./utils";
 import config from './plugin.config.ts'
-import { addCustomButton } from "./api/CustomButton";
 import { useCiderAudio } from "./api/CiderAudio.ts";
-import { createModal } from "./api/Modal.ts";
-import ModalExample from "./components/ModalExample.vue";
-import { addImmersiveLayout } from "./api/ImmersiveLayout.ts";
-import CustomImmersiveLayout from "./components/CustomImmersiveLayout.vue";
 
-
-/**
- * Custom Elements that will be registered in the app
- */
-export const CustomElements
-    = {
-    'hello-world':
-        defineCustomElement(HelloWorld, {
-            /**
-             * Disabling the shadow root DOM so that we can inject styles from the DOM
-             */
-            shadowRoot: false,
-        }),
-    'settings': defineCustomElement(MySettings, {
-        shadowRoot: false
-    }),
-    'modal-example': defineCustomElement(ModalExample, {
-        shadowRoot: false
-    }),
+export const CustomElements = {
     'page-helloworld': defineCustomElement(CustomPage, {
         shadowRoot: false
-    }),
-    'immersive-layout': defineCustomElement(CustomImmersiveLayout, {
-        shadowRoot: false,
     })
 }
 
 export default {
     name: 'My Plugin',
     identifier: config.identifier,
-    /**
-     * Defining our custom settings panel element
-     */
-    SettingsElement: customElementName('settings'),
-    /**
-     * Initial setup function that is executed when the plugin is loaded
-     */
+    version: config.version,
+    description: config.description,
+    
     setup() {
         // Temp workaround
         // @ts-ignore
@@ -60,34 +28,13 @@ export default {
             customElements.define(customElementName(_key), value)
         }
 
-        addImmersiveLayout({
-            name: "My layout",
-            identifier: "my-layout",
-            component: customElementName('immersive-layout'),
-            type: 'normal',
-        })
-
         // Here we add a new entry to the main menu
         addMainMenuEntry({
-            label: "Go to my page",
+            label: "Convertarr",
             onClick() {
                 goToPage({
                     name: 'page-helloworld'
                 });
-            },
-        })
-
-        addMainMenuEntry({
-            label: "Modal example",
-            onClick() {
-                const { closeDialog, openDialog, dialogElement } = createModal({
-                    escClose: true,
-                })
-                const content = document.createElement(customElementName('modal-example'));
-                // @ts-ignore
-                content._props.closeFn = closeDialog;
-                dialogElement.appendChild(content);
-                openDialog();
             },
         })
 
@@ -100,17 +47,9 @@ export default {
             },
         })
 
-        // Here we add a custom button to the top right of the chrome
-        addCustomButton({
-            element: '🤯',
-            location: 'chrome-top/right',
-            title: 'Click me!',
-            menuElement: customElementName('hello-world'),
-        })
-
-        const audio = useCiderAudio();
-        audio.subscribe('ready', () => {
-            console.log("CiderAudio is ready!", audio.context)
+        const audio1 = useCiderAudio();
+        audio1.subscribe('ready', () => {
+            console.log("CiderAudio is ready!", audio1.context)
         })
 
 
@@ -121,4 +60,4 @@ export default {
             },
         })
     },
-} as PluginAPI
+} as PluginAPI;
