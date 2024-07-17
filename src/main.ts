@@ -1,11 +1,9 @@
 import { defineCustomElement } from "./CustomElement/apiCustomElement";
-import { addImmersiveMenuEntry, addMainMenuEntry, addMediaItemContextMenuEntry } from "./api/MenuEntry";
+import { addImmersiveMenuEntry, addMainMenuEntry,} from "./api/MenuEntry";
 import { goToPage } from "./api/Page";
-import { PluginAPI } from "./api/PluginAPI";
 import CustomPage from "./pages/CustomPage.vue";
 import { customElementName } from "./utils";
 import config from './plugin.config.ts'
-import { useCiderAudio } from "./api/CiderAudio.ts";
 
 export const CustomElements = {
     'page-helloworld': defineCustomElement(CustomPage, {
@@ -46,18 +44,4 @@ export default {
                 });
             },
         })
-
-        const audio1 = useCiderAudio();
-        audio1.subscribe('ready', () => {
-            console.log("CiderAudio is ready!", audio1.context)
-        })
-
-
-        addMediaItemContextMenuEntry({
-            label: 'Send to plugin',
-            onClick(item) {
-                console.log('Got this item', item)
-            },
-        })
-    },
-} as PluginAPI;
+    }}

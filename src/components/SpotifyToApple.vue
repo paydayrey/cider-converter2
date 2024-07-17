@@ -8,7 +8,7 @@
       </div>
       <div>
         <label for="userToken">Apple Music User Token:</label>
-        <input type="text" v-model="pref.userToken" id="userToken" required />
+        <input type="password" v-model="pref.userToken" id="userToken" required />
       </div>
       <div>
         <label for="name">Playlist Name (optional):</label>
@@ -139,4 +139,3 @@ button {
   border-radius: 1rem;
 }
 </style>
-  

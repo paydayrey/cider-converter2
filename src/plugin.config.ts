@@ -3,11 +3,11 @@ import { createId } from "@paralleldrive/cuid2"
 export default {
     ce_prefix: createId(),
     identifier: 'sh.cider.plugin-template-wip',
-    name: 'Cider Plugin Template (WIP)',
-    description: 'A template for creating a Cider plugin.',
+    name: 'Convertarr',
+    description: 'A plugin to convert Spotify playlists to Apple Music',
     version: '0.0.1',
-    author: 'ciderapp',
-    repo: 'https://github.com/ciderapp/plugin-template-wip',
+    author: 'DeadFrost',
+    repo: 'https://github.com/DeadFrostt/cider-convertarr',
     entry: {
         'plugin.js': {
             type: 'main',
