@@ -3,17 +3,8 @@
     <google-cast-launcher></google-cast-launcher>
     <form @submit.prevent="convertPlaylist">
       <div>
-        <label for="playlistID">Spotify Playlist ID:</label>
-        <input type="text" v-model="pref.playlistID" id="playlistID" required />
-      </div>
-      <div>
-        <label for="userToken">Apple Music User Token:</label>
-        <div class="token-input-container">
-          <input :type="showToken ? 'text' : 'password'" v-model="pref.userToken" id="userToken" required />
-          <button type="button" @click="toggleShowToken">
-            {{ showToken ? 'Hide' : 'Show' }}
-          </button>
-        </div>
+        <label for="playlistLink">Spotify Playlist Link:</label>
+        <input type="text" v-model="pref.playlistLink" id="playlistLink" required />
       </div>
       <div>
         <label for="name">Playlist Name (optional):</label>
@@ -26,7 +17,7 @@
       <button type="submit">Convert Playlist</button>
     </form>
     <div v-if="result">
-      <h2>Conversion Result</h2>
+      <h3>Conversion Result</h3>
       <div v-if="tracks" class="songs-container">
         <div class="title">Tracks</div>
         <template v-for="item in tracks" :key="item.id">
@@ -50,37 +41,43 @@ onMounted(() => {
   const script = document.createElement('script');
   script.src = 'https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1';
   document.head.appendChild(script);
-})
+});
 
 type Preference = {
-  playlistID: string,
-  userToken: string,
+  playlistLink: string,
   name: string,
   description: string
-}
+};
+
 type SongImageObj = {
   url: string,
   width: number,
   height: number
-}
+};
+
 const pref = ref<Preference>({
-  playlistID: '',
-  userToken: MusicKit.getInstance().musicUserToken,
+  playlistLink: '',
   name: '',
   description: ''
 });
 
 const result = ref<any>(null);
 const tracks = ref<any>(null);
-const showToken = ref(false);
 
-function toggleShowToken() {
-  showToken.value = !showToken.value;
+function extractPlaylistID(link: string): string | null {
+  const match = link.match(/playlist\/([a-zA-Z0-9]+)/);
+  return match ? match[1] : null;
 }
 
 async function convertPlaylist() {
   try {
-    let url = `https://converter.yaz.ninja/importPlaylists/spotify/${pref.value.playlistID}?to=am&userToken=${pref.value.userToken}`;
+    const playlistID = extractPlaylistID(pref.value.playlistLink);
+    if (!playlistID) {
+      throw new Error('Invalid playlist link');
+    }
+
+    const userToken = MusicKit.getInstance().musicUserToken;
+    let url = `https://converter.yaz.ninja/importPlaylists/spotify/${playlistID}?to=am&userToken=${userToken}`;
 
     if (pref.value.name) {
       url += `&name=${encodeURIComponent(pref.value.name)}`;
@@ -88,6 +85,7 @@ async function convertPlaylist() {
     if (pref.value.description) {
       url += `&description=${encodeURIComponent(pref.value.description)}`;
     }
+
     const response = await fetch(url);
     const data = await response.json();
     result.value = data;
@@ -98,7 +96,7 @@ async function convertPlaylist() {
   tracks.value = await getAMSongs(result.value.tracks);
 }
 
-async function getAMSongs(tracks: [{id: string| null, type: "song"}]) {
+async function getAMSongs(tracks: [{id: string | null, type: "song"}]) {
   const storefront = MusicKit.getInstance().storefrontCountryCode;
   const songIDs = tracks.filter(track => track.id && track.type === 'song').map(track => track.id);
   const response = await MusicKit.getInstance().api.v3.music(`v1/catalog/${storefront}/songs?ids=${songIDs.join(',')}`);
@@ -123,19 +121,6 @@ input {
   padding: 8px;
   margin: 5px 0 15px 0;
   box-sizing: border-box;
-}
-.token-input-container {
-  display: flex;
-  align-items: center;
-}
-
-.token-input-container button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0 15px;
-  font-size: 16px;
-  margin-top: -10px; /* Move the button up by 2 pixels */
 }
 button {
   padding: 10px 15px;
